@@ -14,6 +14,7 @@
     pkgs.acct
     pkgs.unixtools.ifconfig
     pkgs.sudo
+    pkgs.htop
   ];
   # Sets environment variables in the workspace
   env = {};
