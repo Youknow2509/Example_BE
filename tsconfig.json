@@ -22,5 +22,9 @@
         "noUnusedParameters": false,
         "noImplicitThis": false,
         "strictFunctionTypes": false
-    }
+    },
+    "include": [
+        "src/**/*.ts",
+    ],
+    "exclude": ["node_modules"]
 }

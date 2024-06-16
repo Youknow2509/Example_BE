@@ -3,9 +3,9 @@ import { GoogleSheetService } from './google-sheet.service';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
+    imports: [AuthModule],
     providers: [GoogleSheetService],
     exports: [GoogleSheetService],
-    imports: [AuthModule],
 })
 export class GoogleSheetModule {
 }
