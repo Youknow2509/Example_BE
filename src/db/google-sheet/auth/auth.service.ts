@@ -35,9 +35,6 @@ export class AuthService {
             access_type: 'offline',
             scope: this.SHEETS_SCOPES,
         });
-
-        console.log(this.oAuth2Client);
-        console.log(this.authorizeUrl);
     }
 
     /* 
