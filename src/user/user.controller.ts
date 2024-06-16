@@ -38,6 +38,7 @@ export class UserController {
             updated_at: new Date(),
             is_deleted: false,
         });
+        
         return this.userService.create(user_creat);
     }
 }

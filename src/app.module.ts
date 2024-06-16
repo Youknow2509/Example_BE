@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './db/google-sheet/auth/auth.module';
 
 @Module({
-    imports: [UserModule],
-    controllers: [AppController],
-    providers: [AppService],
+    //imports: [AuthModule],
+    imports: [AuthModule],
+        
 })
 export class AppModule {}

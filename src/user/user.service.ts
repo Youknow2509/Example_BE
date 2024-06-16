@@ -16,32 +16,32 @@ export class UserService {
             email: 'admin',
             password: '123',
             birthday: new Date(),
-            gender: 'male',
+            gender:'male',
             phone: '0123456789',
             created_at: new Date(),
             updated_at: new Date(),
-            is_deleted: false,
+            is_deleted: false
         });
     }
 
     // get all users
     getAll(): User[] {
-        return this.users.filter((user) => user.is_deleted === false);
+        return this.users.filter(user => user.is_deleted === false);
     }
 
     // get user by id
     getById(id: number): User {
-        return this.users.find((user) => user.id === id);
+        return this.users.find(user => user.id === id);
     }
 
     // get user by email
     getByEmail(email: string): User {
-        return this.users.find((user) => user.email === email);
+        return this.users.find(user => user.email === email);
     }
 
     // get user by phone
     getByPhone(phone: string): User {
-        return this.users.find((user) => user.phone === phone);
+        return this.users.find(user => user.phone === phone);
     }
 
     // create user
@@ -52,14 +52,14 @@ export class UserService {
 
     // update user
     update(user: User): User {
-        const index = this.users.findIndex((u) => u.id === user.id);
+        const index = this.users.findIndex(u => u.id === user.id);
         this.users[index] = user;
         return user;
     }
 
     // delete user
     delete(id: number): User {
-        const index = this.users.findIndex((u) => u.id === id);
+        const index = this.users.findIndex(u => u.id === id);
         const user = this.users[index];
         user.is_deleted = true;
         return user;
@@ -67,7 +67,7 @@ export class UserService {
 
     // restore user
     restore(id: number): User {
-        const index = this.users.findIndex((u) => u.id === id);
+        const index = this.users.findIndex(u => u.id === id);
         const user = this.users[index];
         user.is_deleted = false;
         return user;
