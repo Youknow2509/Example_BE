@@ -17,10 +17,15 @@ export class UserController {
     // Constructor
     constructor(private readonly userService: UserService) {}
 
-    // Get all users
+    // // Get all users
+    // @Get()
+    // getAll(): User[] {
+    //     return this.userService.getAll();
+    // }
+
     @Get()
-    getAll(): User[] {
-        return this.userService.getAll();
+    getAll(): any {
+        return this.userService.getAllUser();
     }
 
     // Get user by id

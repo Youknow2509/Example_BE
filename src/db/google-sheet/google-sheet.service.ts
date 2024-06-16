@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { AuthService } from './auth/auth.service';
+import { google } from 'googleapis';
+import { HandleDataService } from './handle-data/handle-data.service'
 
 @Injectable()
 export class GoogleSheetService {
@@ -10,9 +12,14 @@ export class GoogleSheetService {
 
     private OauthClient: any;
 
+    private googleSheet: any;
+
     private readonly tokenPath: string = process.env.TOKEN_GOOGLE_SHEET_PATH;
     // Constructor
-    constructor(private readonly authService: AuthService) {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly handleDataService: HandleDataService
+    ) {
         this.OauthClient = this.authService.getOauthClient();
 
         this.tokenData = JSON.parse(fs.readFileSync(this.tokenPath, 'utf8'));
@@ -20,6 +27,11 @@ export class GoogleSheetService {
         this.OauthClient.setCredentials(this.tokenData);
 
         this.refreshToken();
+        
+        this.googleSheet = google.sheets({
+                    version: 'v4',
+                    auth: this.OauthClient,
+        });
     }
 
     // Refresh token
@@ -43,5 +55,14 @@ export class GoogleSheetService {
         } catch (error) {
             console.error('Error refreshing access token:', error);
         }
+    }
+
+    /*
+     * Get all User
+     * @param {any} googleSheet
+     * @return {any} All information user in google sheet
+    */
+    async getAllUser() {
+        return this.handleDataService.getAllUsers(this.googleSheet);
     }
 }

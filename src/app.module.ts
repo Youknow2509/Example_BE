@@ -5,7 +5,7 @@ import { GoogleSheetModule } from './db/google-sheet/google-sheet.module';
 
 @Module({
     imports: [
-        GoogleSheetModule
+        UserModule,
     ],
 })
 export class AppModule {}
