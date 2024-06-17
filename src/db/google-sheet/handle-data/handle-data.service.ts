@@ -16,7 +16,7 @@ export class HandleDataService {
     /* 
      * Get All Users
      */
-    async getAllUsers(googleSheet: any): Promise<any> {
-        return this.userService.getAllUsers(googleSheet);
+    async getUsers(googleSheet: any): Promise<any> {
+        return this.userService.getUsers(googleSheet);
     }
 }

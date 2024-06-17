@@ -24,7 +24,7 @@ export class UserService {
     
      * @return {Promise<User>}
     */
-    async getAllUsers(googleSheet: any): Promise<any> {
+    async getUsers(googleSheet: any): Promise<any> {
         try {
             const res: any = await googleSheet.spreadsheets.values.get({
                 spreadsheetId: this.spreadsheetId,

@@ -62,7 +62,7 @@ export class GoogleSheetService {
      * @param {any} googleSheet
      * @return {any} All information user in google sheet
     */
-    async getAllUser() {
-        return this.handleDataService.getAllUsers(this.googleSheet);
+    async getUser() {
+        return this.handleDataService.getUsers(this.googleSheet);
     }
 }
