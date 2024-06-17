@@ -11,13 +11,8 @@ import {
     IsIn,
 } from 'class-validator';
 
-export class createUser {
-    // id
-    @IsNumber()
-    @Min(1)
-    @IsNotEmpty()
-    id: number;
-
+export class CreateUser {
+  
     // user
     @IsString()
     @Length(3, 20)
@@ -63,7 +58,7 @@ export class createUser {
     phone: string;
 
     // Constructor
-    constructor(partial: Partial<createUser>) {
+    constructor(partial: Partial<CreateUser>) {
         Object.assign(this, partial);
     }
 }
