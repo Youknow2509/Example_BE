@@ -9,7 +9,7 @@ import {
     ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User, createUser } from './dto';
+import { User, CreateUser } from './dto';
 import { unescape } from 'querystring';
 
 @Controller('user')
@@ -36,7 +36,7 @@ export class UserController {
 
     // Add new user
     @Post()
-    create(@Body() user: createUser): User {
+    create(@Body() user: CreateUser): User {
         const user_creat = new User({
             ...user,
             created_at: new Date(),

@@ -13,6 +13,7 @@ export class UserService {
     constructor() {
         this.spreadsheetId = process.env.SHEETS_ID_USER;
         this.range = process.env.SHEETS_RANGE_USER;
+
     }
 
     /* 
@@ -58,6 +59,31 @@ export class UserService {
             }
 
             return users;
+        } catch (err) {
+            throw new Error(
+                'The API returned an error: ' +
+                    err +
+                    ' (ERR: readData in )' +
+                    __dirname,
+            );
+        }
+    }
+
+    /*
+     * Help function get Id cur
+     * GetIdCur
+     * @return {int} Id
+    */
+    async getIdCur(googleSheet: any): Promise<any> {
+        try {
+            const res: any = await googleSheet.spreadsheets.values.get({
+                spreadsheetId: this.spreadsheetId,
+                range: 'Users!A1:A'
+            });
+
+            const rows: any[][] | null | undefined = res.data.values;
+            
+            return rows.length - 1;
         } catch (err) {
             throw new Error(
                 'The API returned an error: ' +

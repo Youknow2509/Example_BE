@@ -10,7 +10,7 @@ export class HandleDataService {
     constructor(
         private readonly userService: UserService,
     ) {
-
+        
     }
     
     /* 
@@ -18,5 +18,12 @@ export class HandleDataService {
      */
     async getUsers(googleSheet: any): Promise<any> {
         return this.userService.getUsers(googleSheet);
+    }
+
+    /* 
+     * Get Id Cur
+     */
+    async getIdCur(googleSheet: any): Promise<any> {
+        return this.userService.getIdCur(googleSheet);
     }
 }
