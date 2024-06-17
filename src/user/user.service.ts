@@ -28,8 +28,8 @@ export class UserService {
     }
 
     // get all user from db
-    getAllUser(): any {
-        return this.googleSheetService.getUser();
+    getUsers(): any {
+        return this.googleSheetService.getUsers();
     }
 
     // get all users

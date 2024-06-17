@@ -70,11 +70,11 @@ export class UserService {
     }
 
     /*
-     * Help function get Id cur
-     * GetIdCur
+     * Help function get Id current
+     * GetIdCurrent
      * @return {int} Id
     */
-    async getIdCur(googleSheet: any): Promise<any> {
+    async getIdCurrent(googleSheet: any): Promise<any> {
         try {
             const res: any = await googleSheet.spreadsheets.values.get({
                 spreadsheetId: this.spreadsheetId,

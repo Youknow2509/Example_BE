@@ -21,9 +21,9 @@ export class HandleDataService {
     }
 
     /* 
-     * Get Id Cur
+     * Get Id current
      */
-    async getIdCur(googleSheet: any): Promise<any> {
-        return this.userService.getIdCur(googleSheet);
+    async getIdUserCurrent(googleSheet: any): Promise<any> {
+        return this.userService.getIdCurrent(googleSheet);
     }
 }
