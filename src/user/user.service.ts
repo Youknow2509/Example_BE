@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './dto';
+import { CreateUser, User } from './dto';
 import { GoogleSheetService } from '../db/google-sheet/google-sheet.service';
 
 @Injectable()
@@ -11,25 +11,30 @@ export class UserService {
     constructor(
         private readonly googleSheetService: GoogleSheetService,
     ) {
-        this.users.push({
-            id: 1,
-            user: 'admin',
-            firstName: 'admin',
-            lastName: 'admin',
-            email: 'admin',
-            password: '123',
-            birthday: new Date(),
-            gender:'male',
-            phone: '0123456789',
-            created_at: new Date(),
-            updated_at: new Date(),
-            is_deleted: false
-        });
+        // this.users.push({
+        //     id: 1,
+        //     user: 'admin',
+        //     firstName: 'admin',
+        //     lastName: 'admin',
+        //     email: 'admin',
+        //     password: '123',
+        //     birthday: new Date(),
+        //     gender:'male',
+        //     phone: '0123456789',
+        //     created_at: new Date(),
+        //     updated_at: new Date(),
+        //     is_deleted: false
+        // });
     }
 
     // get all user from db
     getUsers(): any {
         return this.googleSheetService.getUsers();
+    }
+
+    // add user to db
+    appendDataUser(user: CreateUser): any {
+        return this.googleSheetService.appendDataUser(user);
     }
 
     // get all users

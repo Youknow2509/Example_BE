@@ -74,4 +74,13 @@ export class GoogleSheetService {
     async getIdUserCurrent() {
         return this.handleDataService.getIdUserCurrent(this.googleSheet);
     }
+
+    /*
+     * Append Data User
+     * @param {any} googleSheet
+     * @param {CreateUser} user - Create User Object to append to google sheet
+     */
+    async appendDataUser(user: any) {
+        return this.handleDataService.appendDataUser(this.googleSheet, user);
+    }
 }

@@ -28,22 +28,28 @@ export class UserController {
         return this.userService.getUsers();
     }
 
+    // Add user
+    @Post()
+    create(@Body() user: CreateUser): any {
+        return this.userService.appendDataUser(user);
+    }
+
     // Get user by id
     @Get(':id')
     getById(@Param('id', ParseIntPipe) id: number): User {
         return this.userService.getById(id);
     }
 
-    // Add new user
-    @Post()
-    create(@Body() user: CreateUser): User {
-        const user_creat = new User({
-            ...user,
-            created_at: new Date(),
-            updated_at: new Date(),
-            is_deleted: false,
-        });
+    // // Add new user
+    // @Post()
+    // create(@Body() user: CreateUser): User {
+    //     const user_creat = new User({
+    //         ...user,
+    //         created_at: new Date(),
+    //         updated_at: new Date(),
+    //         is_deleted: false,
+    //     });
         
-        return this.userService.create(user_creat);
-    }
+    //     return this.userService.create(user_creat);
+    // }
 }
