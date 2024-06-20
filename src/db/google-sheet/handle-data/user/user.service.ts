@@ -135,6 +135,26 @@ export class UserService {
         }
     };
 
+    /**
+     * Function check handle data can update and append to database
+     * @param {any} googleSheet - 
+     * @param {User} user - 
+     * @return {Promise<any>} - 
+     */
+    async check(googleSheet: any, user: User): Promise<any> {
+        const users: User[] = await this.getUsers(googleSheet);
+        for (var i = 0; i < users.length; i++) {
+            if (
+                users[i].email === user.email ||
+                users[i].phone === user.phone ||
+                users[i].user === user.user    
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // /**
     //  * Clear row data from a Google Sheets spreadsheet.
     //  * @param {JSON} token - The token to authenticate the user.
