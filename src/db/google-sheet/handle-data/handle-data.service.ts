@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
 import { UserService } from './user/user.service';
-import { CreateUser } from 'src/user/dto';
+import { CreateUser, User } from 'src/user/dto';
 
 @Injectable()
 export class HandleDataService {
@@ -35,5 +34,15 @@ export class HandleDataService {
      */
     async appendDataUser(googleSheet: any, user: CreateUser): Promise<any> {
         return this.userService.appendData(googleSheet, user);
+    }
+
+    /**
+     * Upgrade User
+     * @param {any} googleSheet 
+     * @param {User} user 
+     * @returns 
+     */
+    async upgradeUser(googleSheet: any, user: User): Promise<any> {
+        return this.userService.upgradeUser(googleSheet, user);
     }
 }

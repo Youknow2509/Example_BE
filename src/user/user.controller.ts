@@ -33,12 +33,21 @@ export class UserController {
     create(@Body() user: CreateUser): any {
         return this.userService.appendDataUser(user);
     }
-
-    // Get user by id
-    @Get(':id')
-    getById(@Param('id', ParseIntPipe) id: number): User {
-        return this.userService.getById(id);
+    
+    // Upgrade user
+    @Put('/upgrade')
+    upgrade(@Body() user: User): any {
+        user.updated_at = new Date();
+        return this.userService.upgradeUser(user);
     }
+
+
+
+    // // Get user by id
+    // @Get(':id')
+    // getById(@Param('id', ParseIntPipe) id: number): User {
+    //     return this.userService.getById(id);
+    // }
 
     // // Add new user
     // @Post()

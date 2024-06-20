@@ -37,52 +37,61 @@ export class UserService {
         return this.googleSheetService.appendDataUser(user);
     }
 
-    // get all users
-    getAll(): User[] {
-        return this.users.filter(user => user.is_deleted === false);
+    /**
+     * Upgrade User
+     * @param {User} user 
+     * @returns 
+     */
+    upgradeUser(user: User): any {
+        return this.googleSheetService.upgradeUser(user);
     }
 
-    // get user by id
-    getById(id: number): User {
-        return this.users.find(user => user.id === id);
-    }
+    // // get all users
+    // getAll(): User[] {
+    //     return this.users.filter(user => user.is_deleted === false);
+    // }
 
-    // get user by email
-    getByEmail(email: string): User {
-        return this.users.find(user => user.email === email);
-    }
+    // // get user by id
+    // getById(id: number): User {
+    //     return this.users.find(user => user.id === id);
+    // }
 
-    // get user by phone
-    getByPhone(phone: string): User {
-        return this.users.find(user => user.phone === phone);
-    }
+    // // get user by email
+    // getByEmail(email: string): User {
+    //     return this.users.find(user => user.email === email);
+    // }
 
-    // create user
-    create(user: User): User {
-        this.users.push(user);
-        return user;
-    }
+    // // get user by phone
+    // getByPhone(phone: string): User {
+    //     return this.users.find(user => user.phone === phone);
+    // }
 
-    // update user
-    update(user: User): User {
-        const index = this.users.findIndex(u => u.id === user.id);
-        this.users[index] = user;
-        return user;
-    }
+    // // create user
+    // create(user: User): User {
+    //     this.users.push(user);
+    //     return user;
+    // }
 
-    // delete user
-    delete(id: number): User {
-        const index = this.users.findIndex(u => u.id === id);
-        const user = this.users[index];
-        user.is_deleted = true;
-        return user;
-    }
+    // // update user
+    // update(user: User): User {
+    //     const index = this.users.findIndex(u => u.id === user.id);
+    //     this.users[index] = user;
+    //     return user;
+    // }
 
-    // restore user
-    restore(id: number): User {
-        const index = this.users.findIndex(u => u.id === id);
-        const user = this.users[index];
-        user.is_deleted = false;
-        return user;
-    }
+    // // delete user
+    // delete(id: number): User {
+    //     const index = this.users.findIndex(u => u.id === id);
+    //     const user = this.users[index];
+    //     user.is_deleted = true;
+    //     return user;
+    // }
+
+    // // restore user
+    // restore(id: number): User {
+    //     const index = this.users.findIndex(u => u.id === id);
+    //     const user = this.users[index];
+    //     user.is_deleted = false;
+    //     return user;
+    // }
 }

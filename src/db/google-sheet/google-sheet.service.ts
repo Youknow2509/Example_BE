@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { AuthService } from './auth/auth.service';
 import { google } from 'googleapis';
-import { HandleDataService } from './handle-data/handle-data.service'
+import { HandleDataService } from './handle-data/handle-data.service';
+import { CreateUser, User } from'src/user/dto';
 
 @Injectable()
 export class GoogleSheetService {
@@ -57,30 +58,36 @@ export class GoogleSheetService {
         }
     }
 
-    /*
+    /** 
      * Get all User
-     * @param {any} googleSheet
      * @return {any} All information user in google sheet
     */
     async getUsers() {
         return this.handleDataService.getUsers(this.googleSheet);
     }
 
-    /*
+    /** 
      * Get Id current
-     * @param {any} googleSheet
      * @return {int} Id current
      */
     async getIdUserCurrent() {
         return this.handleDataService.getIdUserCurrent(this.googleSheet);
     }
 
-    /*
+    /** 
      * Append Data User
-     * @param {any} googleSheet
      * @param {CreateUser} user - Create User Object to append to google sheet
      */
-    async appendDataUser(user: any) {
+    async appendDataUser(user: CreateUser) {
         return this.handleDataService.appendDataUser(this.googleSheet, user);
+    }
+
+    /**
+     * Upgrade User
+     * @param {User} user 
+     * @returns
+     */
+    async upgradeUser(user: User) {
+        return this.handleDataService.upgradeUser(this.googleSheet, user);
     }
 }

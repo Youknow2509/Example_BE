@@ -127,6 +127,71 @@ export class UserService {
         }
     };
 
+    /**
+     * Upgrade user data in database
+     * @param {any} googleSheet 
+     * @param {User} user 
+     * @returns 
+     */
+    async upgradeUser(
+        googleSheet: any, 
+        user: User
+    ): Promise<any> {
+
+        // const c: any = await this.check(googleSheet, user);
+        // if (c && c.statusCode === 400) {
+        //     return c;
+        // }
+
+        try {
+            const result = await googleSheet.spreadsheets.values.update({
+                spreadsheetId: this.spreadsheetId,
+                range: `Users!A${user.id + 1}:L${user.id + 1}`,
+                valueInputOption: 'USER_ENTERED',
+                resource: {
+                    values: [
+                        [
+                            user.id,
+                            user.user,
+                            user.firstName,
+                            user.lastName,
+                            user.email,
+                            user.password,
+                            user.birthday,
+                            user.gender,
+                            user.phone,
+                            user.created_at,
+                            user.updated_at,
+                            user.is_deleted,
+                        ],
+                    ],
+                },
+            });
+            return result.config.data.values; // todo change
+        } catch (err) {
+            throw new Error(
+                'The API returned an error: ' +
+                    err +
+                    ' (ERR: upgradeUser in )' +
+                    __dirname,
+            );
+        }
+    }
+
+    /**
+     * Find user in database
+     * @param {any} googleSheet 
+     * @param {string | number} identifier
+     * @returns {User}
+     */
+    async findUser(
+        googleSheet: any, 
+        identifier: string | number
+    ): Promise<User> {
+        const users: User[] = await this.getUsers(googleSheet);
+        return users.find(user => user.id === identifier);
+    }
+
     /*
      * Help function get Id current
      * GetIdCurrent
