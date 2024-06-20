@@ -68,6 +68,65 @@ export class UserService {
         }
     }
 
+    /**
+     * Append data to a Google Sheets spreadsheet.
+     * @param {any} googleSheet -
+     * @param {CreateUser} user -
+     * @return {Promise<any>} -
+     */
+    async appendData(
+        googleSheet: any, 
+        createUseruser: CreateUser
+    ): Promise<any> {
+        const user: User = new User({
+            ...createUseruser,
+            created_at: new Date(),
+            updated_at: new Date(),
+            is_deleted: false,
+            id: parseInt(await this.getIdCurrent(googleSheet)) + 1,
+        });
+
+        const c: any = await this.check(googleSheet, user);
+        if (c && c.statusCode === 400) {
+            return c;
+        }
+
+        const value: any = [
+            user.id,
+            user.user,
+            user.firstName,
+            user.lastName,
+            user.email,
+            user.password,
+            user.birthday,
+            user.gender,
+            user.phone,
+            user.created_at,
+            user.updated_at,
+            user.is_deleted,
+        ];
+        
+        try {
+            const result = await googleSheet.spreadsheets.values.append({
+                spreadsheetId: this.spreadsheetId,
+                range: this.range,
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                resource: {
+                    values: [value],
+                },
+            });
+            return result.config.data.values; // todo change 
+        } catch (err) {
+            throw new Error(
+                'The API returned an error: ' +
+                    err +
+                    ' (ERR: appendData in )' +
+                    __dirname,
+            );
+        }
+    };
+
     /*
      * Help function get Id current
      * GetIdCurrent
@@ -94,100 +153,44 @@ export class UserService {
     }
 
     /**
-     * Append data to a Google Sheets spreadsheet.
-     * @param {any} googleSheet -
-     * @param {CreateUser} user -
-     * @return {Promise<any>} -
-     */
-    appendData = async (googleSheet: any, user: CreateUser): Promise<any> => {
-        const value = [
-            parseInt(await this.getIdCurrent(googleSheet)) + 1,
-            user.user,
-            user.firstName,
-            user.lastName,
-            user.email,
-            user.password,
-            user.birthday,
-            user.gender,
-            user.phone,
-            new Date(),
-            new Date(),
-            false,
-        ];
-        try {
-            const result = await googleSheet.spreadsheets.values.append({
-                spreadsheetId: this.spreadsheetId,
-                range: this.range,
-                valueInputOption: 'USER_ENTERED',
-                insertDataOption: 'INSERT_ROWS',
-                resource: {
-                    values: [value],
-                },
-            });
-            return result.config.data.values; // todo change 
-        } catch (err) {
-            throw new Error(
-                'The API returned an error: ' +
-                    err +
-                    ' (ERR: appendData in )' +
-                    __dirname,
-            );
-        }
-    };
-
-    /**
-     * Function check handle data can update and append to database
+     * Help function check handle data can update and append to database
      * @param {any} googleSheet - 
      * @param {User} user - 
      * @return {Promise<any>} - 
      */
-    async check(googleSheet: any, user: User): Promise<any> {
+    async check (
+        googleSheet: any, 
+        user: User
+    ): Promise<{
+        message: string;
+        statusCode: number;
+    }> {
         const users: User[] = await this.getUsers(googleSheet);
         for (var i = 0; i < users.length; i++) {
             if (
-                users[i].email === user.email ||
-                users[i].phone === user.phone ||
-                users[i].user === user.user    
+                users[i].user === user.user 
             ) {
-                return false;
+                return {
+                    message: "User bi trung !!!",
+                    statusCode: 400,
+                };
+            }
+            if (
+                users[i].email === user.email 
+            ) {
+                return {
+                    message: "Email bi trung !!!",
+                    statusCode: 400,
+                };
+            }
+            if (
+                users[i].phone === user.phone 
+            ) {
+                return {
+                    message: "Phone bi trung !!!",
+                    statusCode: 400,
+                };
             }
         }
-        return true;
     }
-
-    // /**
-    //  * Clear row data from a Google Sheets spreadsheet.
-    //  * @param {JSON} token - The token to authenticate the user.
-    //  * @param {string} spreadsheetId - The ID of the spreadsheet to clear data from.
-    //  * @param {string} nameSheet - The name of the sheet to clear data from.
-    //  * @param {int} row - The row to clear data from.
-    //  */
-    // clearRowData = async (
-    //     token: JSON | undefined,
-    //     spreadsheetId: string | undefined,
-    //     nameSheet: string | undefined,
-    //     row: number | undefined,
-    // ): Promise<any> => {
-    //     await oAuth2Client.setCredentials(token);
-    //     const googleSheets: any = google.sheets({
-    //         version: 'v4',
-    //         auth: oAuth2Client,
-    //     });
-
-    //     try {
-    //         const result = await googleSheets.spreadsheets.values.clear({
-    //             spreadsheetId,
-    //             range: `${nameSheet}!A${row}:Y${row}`,
-    //         });
-    //         console.log(`${result.data.updates.updatedCells} cells cleared.`);
-    //         return result;
-    //     } catch (err) {
-    //         throw new Error(
-    //             'The API returned an error: ' +
-    //                 err +
-    //                 ' (ERR: clearRowData in )' +
-    //                 __dirname,
-    //         );
-    //     }
-    // };
 }
