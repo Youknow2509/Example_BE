@@ -90,4 +90,13 @@ export class GoogleSheetService {
     async upgradeUser(user: User) {
         return this.handleDataService.upgradeUser(this.googleSheet, user);
     }
+
+    /** 
+     * Find User with id
+     * @param {number} id - Id User
+     * @return {User | undefined} 
+     */
+    async findUser(id: number) {
+        return this.handleDataService.findUser(this.googleSheet, id);
+    }
 }

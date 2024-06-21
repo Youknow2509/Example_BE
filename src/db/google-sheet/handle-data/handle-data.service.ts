@@ -45,4 +45,14 @@ export class HandleDataService {
     async upgradeUser(googleSheet: any, user: User): Promise<any> {
         return this.userService.upgradeUser(googleSheet, user);
     }
+
+    /** 
+     * Find User with id
+     * @param {any} googleSheet 
+     * @param {number} id - Id User
+     * @return {User | undefined} 
+     */
+    async findUser(googleSheet: any, id: number): Promise<User> {
+        return this.userService.findUser(googleSheet, id);
+    }
 }

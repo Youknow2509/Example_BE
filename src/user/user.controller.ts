@@ -41,7 +41,11 @@ export class UserController {
         return this.userService.upgradeUser(user);
     }
 
-
+    // Find user
+    @Get(':id')
+    find(@Param('id', ParseIntPipe) id: number): any {
+        return this.userService.findUser(id);
+    }
 
     // // Get user by id
     // @Get(':id')

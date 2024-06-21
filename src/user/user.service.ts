@@ -46,6 +46,15 @@ export class UserService {
         return this.googleSheetService.upgradeUser(user);
     }
 
+    /** 
+     * Find User
+     * @param {number} id - Id User
+     * @return {User | undefined} 
+     */
+    async findUser(id: number) {        
+        return this.googleSheetService.findUser(id);;
+    }
+
     // // get all users
     // getAll(): User[] {
     //     return this.users.filter(user => user.is_deleted === false);

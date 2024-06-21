@@ -186,10 +186,13 @@ export class UserService {
      */
     async findUser(
         googleSheet: any, 
-        identifier: string | number
+        identifier: number
     ): Promise<User> {
         const users: User[] = await this.getUsers(googleSheet);
-        return users.find(user => user.id === identifier);
+        if (!users) {
+            return null;
+        }
+        return users.find(u => Number(u.id) === identifier);
     }
 
     /*
