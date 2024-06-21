@@ -23,11 +23,11 @@
 Ex: 
     ```JSON
         {
-        "access_token": "YOUR_ACCESS_TOKEN",
-        "refresh_token": "YOUR_REFRESH_TOKEN",
-        "scope": "YOUR_SCOPE",
-        "token_type": "YOUR_TOKEN_TYPE",
-        "expiry_date": YOUR_EXPIRY_DATE
+            "access_token": "YOUR_ACCESS_TOKEN",
+            "refresh_token": "YOUR_REFRESH_TOKEN",
+            "scope": "YOUR_SCOPE",
+            "token_type": "YOUR_TOKEN_TYPE",
+            "expiry_date": YOUR_EXPIRY_DATE
         }
     ```
 
