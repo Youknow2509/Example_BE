@@ -55,4 +55,25 @@ export class HandleDataService {
     async findUser(googleSheet: any, id: number): Promise<User> {
         return this.userService.findUser(googleSheet, id);
     }
+
+    /** 
+     * Delete User with id
+     * @param {any} googleSheet 
+     * @param {number} id - Id User
+     * @return {User | undefined} 
+     */
+    async deleteUser(googleSheet: any, id: number): Promise<any> {
+        return this.userService.deleteUser(googleSheet, id);
+    }
+
+    /** 
+     * Restore User with id
+     * @param {any} googleSheet 
+     * @param {number} id - Id User
+     * @return {User | undefined} 
+     */
+    async restoreUser(googleSheet: any, id: number): Promise<any> {
+        return this.userService.restoreUser(googleSheet, id);
+    }
+
 }

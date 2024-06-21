@@ -146,7 +146,7 @@ export class UserService {
         try {
             const result = await googleSheet.spreadsheets.values.update({
                 spreadsheetId: this.spreadsheetId,
-                range: `Users!A${user.id + 1}:L${user.id + 1}`,
+                range: `Users!A${Number(user.id) + 1}:L${Number(user.id) + 1}`,
                 valueInputOption: 'USER_ENTERED',
                 resource: {
                     values: [
@@ -176,6 +176,60 @@ export class UserService {
                     __dirname,
             );
         }
+    }
+
+    /**
+     * Delete user in database
+     * @param {any} googleSheet 
+     * @param {number} id
+     * @returns 
+     */
+    async deleteUser(
+        googleSheet: any, 
+        id: number
+    ): Promise<any> {
+        const user: User = await this.findUser(googleSheet, id);
+        if (!user) {
+            return {
+                statusCode: 404,
+                message: 'User not found',
+            };
+        }
+        this.upgradeUser(
+            googleSheet,
+            new User({
+                ...user,
+                is_deleted: true,
+                updated_at: new Date(),
+            }),
+        );
+    }
+
+    /**
+     * Restore user in database
+     * @param { any } googleSheet 
+     * @param { number } id 
+     * @returns
+     */
+    async restoreUser(
+        googleSheet: any, 
+        id: number
+    ): Promise<any> {
+        const user: User = await this.findUser(googleSheet, id);
+        if (!user) {
+            return {
+                statusCode: 404,
+                message: 'User not found',
+            };
+        }
+        this.upgradeUser(
+            googleSheet,
+            new User({
+                ...user,
+                is_deleted: false,
+                updated_at: new Date(),
+            }),
+        );
     }
 
     /**

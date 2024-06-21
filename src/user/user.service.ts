@@ -55,52 +55,21 @@ export class UserService {
         return this.googleSheetService.findUser(id);;
     }
 
-    // // get all users
-    // getAll(): User[] {
-    //     return this.users.filter(user => user.is_deleted === false);
-    // }
+    /**
+     * Delete User with id
+     * @param {number} id - Id User
+     * @return {Promise<any>}
+     */
+    async deleteUser(id: number) {
+        return this.googleSheetService.deleteUser(id);
+    }
 
-    // // get user by id
-    // getById(id: number): User {
-    //     return this.users.find(user => user.id === id);
-    // }
-
-    // // get user by email
-    // getByEmail(email: string): User {
-    //     return this.users.find(user => user.email === email);
-    // }
-
-    // // get user by phone
-    // getByPhone(phone: string): User {
-    //     return this.users.find(user => user.phone === phone);
-    // }
-
-    // // create user
-    // create(user: User): User {
-    //     this.users.push(user);
-    //     return user;
-    // }
-
-    // // update user
-    // update(user: User): User {
-    //     const index = this.users.findIndex(u => u.id === user.id);
-    //     this.users[index] = user;
-    //     return user;
-    // }
-
-    // // delete user
-    // delete(id: number): User {
-    //     const index = this.users.findIndex(u => u.id === id);
-    //     const user = this.users[index];
-    //     user.is_deleted = true;
-    //     return user;
-    // }
-
-    // // restore user
-    // restore(id: number): User {
-    //     const index = this.users.findIndex(u => u.id === id);
-    //     const user = this.users[index];
-    //     user.is_deleted = false;
-    //     return user;
-    // }
+    /**
+     * Restore User with id
+     * @param {number} id - Id User
+     * @return {Promise<any>}
+     */
+    async restoreUser(id: number) {
+        return this.googleSheetService.restoreUser(id);
+    }
 }

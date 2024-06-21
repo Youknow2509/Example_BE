@@ -99,4 +99,22 @@ export class GoogleSheetService {
     async findUser(id: number) {
         return this.handleDataService.findUser(this.googleSheet, id);
     }
+
+    /**
+     * Delete User with id
+     * @param { number } id - Id User
+     * @return {}
+     */
+    async deleteUser(id: number) {
+        return this.handleDataService.deleteUser(this.googleSheet, id);
+    }
+
+    /**
+     * Restore User with id
+     * @param { number } id - Id User
+     * @return {}
+     */
+    async restoreUser(id: number) {
+        return this.handleDataService.restoreUser(this.googleSheet, id);
+    }
 }

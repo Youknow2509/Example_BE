@@ -17,12 +17,7 @@ export class UserController {
     // Constructor
     constructor(private readonly userService: UserService) {}
 
-    // // Get all users
-    // @Get()
-    // getAll(): User[] {
-    //     return this.userService.getAll();
-    // }
-
+    // Get all user
     @Get()
     getAll(): any {
         return this.userService.getUsers();
@@ -47,22 +42,15 @@ export class UserController {
         return this.userService.findUser(id);
     }
 
-    // // Get user by id
-    // @Get(':id')
-    // getById(@Param('id', ParseIntPipe) id: number): User {
-    //     return this.userService.getById(id);
-    // }
+    // Delete user
+    @Delete(':id')
+    delete(@Param('id', ParseIntPipe) id: number): any {
+        return this.userService.deleteUser(id);
+    }
 
-    // // Add new user
-    // @Post()
-    // create(@Body() user: CreateUser): User {
-    //     const user_creat = new User({
-    //         ...user,
-    //         created_at: new Date(),
-    //         updated_at: new Date(),
-    //         is_deleted: false,
-    //     });
-        
-    //     return this.userService.create(user_creat);
-    // }
+    // Restore user
+    @Put(':id/restore')
+    restore(@Param('id', ParseIntPipe) id: number): any {
+        return this.userService.restoreUser(id);
+    }
 }
