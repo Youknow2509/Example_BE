@@ -3,25 +3,35 @@
 - **Github**: *https://github.com/Youknow2509*
 
 # Description:
-    - Nestjs BE
-    - Google Cloud Platform API Reference for Node
-    - Google Sheets API
-    - Cookies
-    - Auth
-    - v.v 
+- Nestjs BE
+- Google Cloud Platform API Reference for Node
+- Google Sheets API
+- Cookies
+- Auth
+- v.v 
 
 # How to use it:
-    - Install node packages: 
-        ```bash
-            npm i
-        ```
+- Install node packages: 
+    ```bash
+        npm i
+    ```
 
-    - If else dont have tokens use:
-    [Modules](https://github.com/Youknow2509/Modules/tree/master/useGoogleSheets)
-    
-    - Save token in location: `/src/db/google-sheet/config.json`
+- If else dont have tokens use:
+[Modules](https://github.com/Youknow2509/Modules/tree/master/useGoogleSheets)
 
-    - Write .env
+- Save token in location: `/src/db/google-sheet/config.json`
+Ex: 
+    ```JSON
+        {
+        "access_token": "YOUR_ACCESS_TOKEN",
+        "refresh_token": "YOUR_REFRESH_TOKEN",
+        "scope": "YOUR_SCOPE",
+        "token_type": "YOUR_TOKEN_TYPE",
+        "expiry_date": YOUR_EXPIRY_DATE
+        }
+    ```
+
+- Write .env
     ```env
         SHEETS_CLIENT_ID={YOUR_SHEETS_CLIENT_ID}
         SHEETS_CLIENT_SECRET={YOUR_SHEETS_CLIENT_SECRET}
@@ -32,7 +42,7 @@
         SHEETS_RANGE_USER='YOUR_SHEETS_RANGE_USER'
     ```
 
-    - Run: 
+- Run: 
     ```bash
         npm run start
     ```
