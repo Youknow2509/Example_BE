@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { AuthService } from './auth/auth.service';
 import { google } from 'googleapis';
 import { HandleDataService } from './handle-data/handle-data.service';
-import { CreateUser, User } from'src/user/dto';
+import { CreateUser, User } from 'src/user/dto';
 
 @Injectable()
 export class GoogleSheetService {
@@ -19,11 +19,14 @@ export class GoogleSheetService {
     // Constructor
     constructor(
         private readonly authService: AuthService,
-        private readonly handleDataService: HandleDataService
+        private readonly handleDataService: HandleDataService,
     ) {
         this.OauthClient = this.authService.getOauthClient();
-
-        this.tokenData = JSON.parse(fs.readFileSync(this.tokenPath, 'utf8'));
+        try {
+            this.tokenData = JSON.parse(fs.readFileSync(this.tokenPath, 'utf8'));
+        } catch (error) {
+            console.log('File not found or dont have token - Creat token in /create-token', error);
+        }
 
         this.OauthClient.setCredentials(this.tokenData);
 
@@ -48,11 +51,15 @@ export class GoogleSheetService {
             this.tokenData.expiry_date = tokens.credentials.expiry_date;
 
             // Save the updated token back to the file
-            fs.writeFileSync(
-                this.tokenPath,
-                JSON.stringify(this.tokenData, null, 2),
-                'utf8',
-            );
+            try {
+                fs.writeFileSync(
+                    this.tokenPath,
+                    JSON.stringify(this.tokenData, null, 2),
+                    'utf8',
+                );
+            } catch (error) {
+                console.error('Error writing file:', error);
+            }
         } catch (error) {
             console.error('Error refreshing access token:', error);
         }
