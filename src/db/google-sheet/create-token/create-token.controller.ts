@@ -26,8 +26,8 @@ export class CreateTokenController {
      * Get token after login 
      * Method: Get
      */
-    @Get('oauth2callback')
+    @Get('/oauth2callback')
     getCodeAuth(@Res() res: any, @Req() req: any) {
-        
+        return this.createTokenService.getCodeAuth(res, req);
     }
 }

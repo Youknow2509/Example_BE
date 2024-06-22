@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { Injectable, Res, Req } from '@nestjs/common';
 import { google } from 'googleapis';
+import * as fs from 'fs';
 
 @Injectable()
 export class CreateTokenService {
@@ -11,13 +12,15 @@ export class CreateTokenService {
     SCOPES: string;
     oAuth2Client: any;
     generateAuthUrl: any;
-
+    code: string;
+    tokenPath: string;
     // Constructor
     constructor() {
         this.SHEETS_CLIENT_ID = process.env.SHEETS_CLIENT_ID;
         this.SHEETS_CLIENT_SECRET = process.env.SHEETS_CLIENT_SECRET;
         this.SHEETS_REDIRECT_URL = process.env.SHEETS_REDIRECT_URL;
-        this.SCOPES =  process.env.SHEETS_SCOPES;
+        this.SCOPES = process.env.SHEETS_SCOPES;
+        this.tokenPath = process.env.TOKEN_GOOGLE_SHEET_PATH;
 
         this.oAuth2Client = this.createOAuth2Client();
         google.options({auth: this.oAuth2Client});
@@ -82,8 +85,32 @@ export class CreateTokenService {
      * @returns {} code 
      */
     getCodeAuth(@Res() res: any, @Req() req: any) : any {
-        const code : string = req.query.code as string;
-        console.log(code);
-        return code;
+        this.code = req.query.code as string;
+        this.createToken();
+        return res.send('Create token success, token save in path: ' + this.tokenPath);
+    }
+
+    /** 
+     * Create token after have code auth
+     */
+    async createToken() : Promise<void> {
+        const { tokens } = await this.oAuth2Client.getToken(this.code);
+        await this.writeTokenToFile(tokens);
+        console.log('Token saved ok');
+    }
+
+    /**
+     * Write toklen to file
+     */
+    writeTokenToFile(token: any) : void {
+        try {
+            fs.writeFileSync(
+                this.tokenPath,
+                JSON.stringify(token, null, 2),
+                'utf8',
+            );
+        } catch (error) {
+            console.error('Error writing file:', error);
+        }
     }
 }
