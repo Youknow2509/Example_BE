@@ -49,7 +49,8 @@ export class UserService {
                             phone: rows[i][8],
                             created_at: rows[i][9],
                             updated_at: rows[i][10],
-                            is_deleted: rows[i][11],
+                            roles: rows[i][11],
+                            is_deleted: rows[i][12],
                         }),
                     );
                 }
@@ -83,6 +84,7 @@ export class UserService {
             created_at: new Date(),
             updated_at: new Date(),
             is_deleted: false,
+            roles: ['user'],
             id: parseInt(await this.getIdCurrent(googleSheet)) + 1,
         });
 
@@ -103,6 +105,7 @@ export class UserService {
             user.phone,
             user.created_at,
             user.updated_at,
+            user.roles.toString(),
             user.is_deleted,
         ];
         
@@ -146,7 +149,7 @@ export class UserService {
         try {
             const result = await googleSheet.spreadsheets.values.update({
                 spreadsheetId: this.spreadsheetId,
-                range: `Users!A${Number(user.id) + 1}:L${Number(user.id) + 1}`,
+                range: `Users!A${Number(user.id) + 1}:M${Number(user.id) + 1}`,
                 valueInputOption: 'USER_ENTERED',
                 resource: {
                     values: [
@@ -162,6 +165,7 @@ export class UserService {
                             user.phone,
                             user.created_at,
                             user.updated_at,
+                            (user.roles).toString(),
                             user.is_deleted,
                         ],
                     ],
