@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as morgan from 'morgan';
 
 async function bootstrap() {
     const PORT = 3000;
@@ -24,6 +25,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(new ValidationPipe());
+    app.use(morgan('combined'));
 
     await app.listen(PORT, () => {
         console.log('Server is running on: http://localhost:' + PORT + '/');
