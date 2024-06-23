@@ -21,7 +21,7 @@ export class GoogleSheetService {
         private readonly authService: AuthService,
         private readonly handleDataService: HandleDataService,
     ) {
-        this.OauthClient = this.authService.getOauthClient();
+        this.OauthClient = this.authService.getOAuth2Client();
         try {
             this.tokenData = JSON.parse(fs.readFileSync(this.tokenPath, 'utf8'));
         } catch (error) {
@@ -29,8 +29,6 @@ export class GoogleSheetService {
         }
 
         this.OauthClient.setCredentials(this.tokenData);
-
-        this.refreshToken();
         
         this.googleSheet = google.sheets({
                     version: 'v4',
@@ -38,32 +36,7 @@ export class GoogleSheetService {
         });
     }
 
-    // Refresh token
-    async refreshToken() {
-        try {
-            // Refresh the access token
-            const tokens = await this.OauthClient.refreshAccessToken();
-            const newAccessToken = tokens.credentials.access_token;
-            const expiryDate = new Date(tokens.credentials.expiry_date);
-
-            // Update the token data with the new access token and expiry date
-            this.tokenData.access_token = newAccessToken;
-            this.tokenData.expiry_date = tokens.credentials.expiry_date;
-
-            // Save the updated token back to the file
-            try {
-                fs.writeFileSync(
-                    this.tokenPath,
-                    JSON.stringify(this.tokenData, null, 2),
-                    'utf8',
-                );
-            } catch (error) {
-                console.error('Error writing file:', error);
-            }
-        } catch (error) {
-            console.error('Error refreshing access token:', error);
-        }
-    }
+    // Methods
 
     /** 
      * Get all User

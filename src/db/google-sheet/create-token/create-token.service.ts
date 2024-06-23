@@ -1,80 +1,43 @@
 import 'dotenv/config';
-import { Injectable, Res, Req } from '@nestjs/common';
-import { google } from 'googleapis';
+import { Injectable, Res, Req, HttpStatus } from '@nestjs/common';
 import * as fs from 'fs';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class CreateTokenService {
     // Var
-    SHEETS_CLIENT_ID: string;
-    SHEETS_CLIENT_SECRET: string;
-    SHEETS_REDIRECT_URL: string;
-    SCOPES: string;
-    oAuth2Client: any;
-    generateAuthUrl: any;
     code: string;
     tokenPath: string;
+    oAuth2Client: any;
+    generateAuthUrl: string;
+    tokenData: any;
     // Constructor
-    constructor() {
-        this.SHEETS_CLIENT_ID = process.env.SHEETS_CLIENT_ID;
-        this.SHEETS_CLIENT_SECRET = process.env.SHEETS_CLIENT_SECRET;
-        this.SHEETS_REDIRECT_URL = process.env.SHEETS_REDIRECT_URL;
-        this.SCOPES = process.env.SHEETS_SCOPES;
+    constructor(
+        private readonly authService: AuthService
+    ) {
+        this.oAuth2Client = authService.getOAuth2Client();
+        this.generateAuthUrl = authService.getGenerateAuthUrl();
         this.tokenPath = process.env.TOKEN_GOOGLE_SHEET_PATH;
-
-        this.oAuth2Client = this.createOAuth2Client();
-        google.options({auth: this.oAuth2Client});
-        this.generateAuthUrl = this.createGenerateAuthUrl();
 
     }
 
     // Methods
 
-    /**
-     * Create a new OAuth2 client with the configured keys.
-     * @return {google.auth.OAuth2} The OAuth2 client.
-     */
-    private createOAuth2Client() : any {
-        return new google.auth.OAuth2(
-            this.SHEETS_CLIENT_ID,
-            this.SHEETS_CLIENT_SECRET,
-            this.SHEETS_REDIRECT_URL
-        );
-    }
-
-    /**
-     * Generate a url that can be used to create an OAuth2 authorization url.
-     * @return {string} The authorization url.
-     */
-    private createGenerateAuthUrl() : string {
-        return this.oAuth2Client.generateAuthUrl({
-            access_type: 'offline',
-            scope: this.SCOPES,
-        });
-    }
-
-    /**
-     * Get oAuth2Client
-     * @return {google.auth.OAuth2} The OAuth2 client.
-     */
-    getOAuth2Client() : any {
-        return this.oAuth2Client;
-    }
-
-    /**
-     * Get generateAuthUrl
-     * @return {string} The authorization url.
-     */
-    getGenerateAuthUrl() : string {
-        return this.generateAuthUrl;
-    }
-
+    
     /**
      * Redirect url to oauth2 client
      * @param {Response} res 
      * @returns {} redirect url 
      */
     redirectToUrlOAuth2Client(@Res() res: any) : any {
+        this.readTokenFromFile();
+        if (this.tokenData) {
+            return res.status(HttpStatus.OK)
+                .json({
+                statusCode: HttpStatus.OK,
+                message: 'You have token, token save in path:'+ this.tokenPath,
+            });
+        } 
         return res.redirect(this.generateAuthUrl);
     }
 
@@ -95,12 +58,13 @@ export class CreateTokenService {
      */
     async createToken() : Promise<void> {
         const { tokens } = await this.oAuth2Client.getToken(this.code);
+        this.tokenData = tokens;
         await this.writeTokenToFile(tokens);
-        console.log('Token saved ok');
+        console.log('Token saved ok, refesh sever');
     }
 
     /**
-     * Write toklen to file
+     * Write token to file
      */
     writeTokenToFile(token: any) : void {
         try {
@@ -111,6 +75,18 @@ export class CreateTokenService {
             );
         } catch (error) {
             console.error('Error writing file:', error);
+        }
+    }
+
+    /** 
+     * Read token in file
+     */
+    readTokenFromFile() : void {
+        try {
+            this.tokenData = JSON.parse(fs.readFileSync(this.tokenPath, 'utf8'));
+        } catch (error) {
+            this.tokenData = undefined;
+            console.log('File not found or dont have token');
         }
     }
 }
