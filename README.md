@@ -8,6 +8,8 @@
 - Google Sheets API
 - Cookies
 - Auth
+- REST API
+- Authorization, roles
 - v.v 
 
 # How to use it:
@@ -16,8 +18,7 @@
         npm i
     ```
 
-- If else dont have tokens use:
-[Modules](https://github.com/Youknow2509/Modules/tree/master/useGoogleSheets)
+- If else dont have tokens use or want creat new token open path: `http://localhost:{YOUR_PORT}/create-token`.
 
 - Save token in location: `/src/db/google-sheet/config.json`
 Ex: 
@@ -40,10 +41,12 @@ Ex:
         TOKEN_GOOGLE_SHEET_PATH='./src/db/google-sheet/config.json'
         SHEETS_ID_USER={YOUR_SHEETS_ID_USER}
         SHEETS_RANGE_USER='YOUR_SHEETS_RANGE_USER'
+        PATH_LOG='./src'
     ```
 
 - Run: 
     ```bash
-        npm run start
+        npm run start:dev
     ```
     
+- Use Swagger REST API in: `http://localhost:{YOUR_PORT}/api`.
