@@ -29,21 +29,30 @@ const handleLog = (app : any): void => {
 };
 
 const handleSwaggerModuleAPI = (app : any): void => {
-    const config = new DocumentBuilder()
-        .setTitle('V')
-        .setVersion('1.0')
-        .addTag('V')
-        .setDescription(`
+
+    const title: string = 'V';
+    const version: string = '1.0';
+    const tag: string = 'V';
+    const decription: string = 
+        `
             Contact:
             - Mail: lytranvinh.work@gmail.com 
             - Github: https://github.com/Youknow2509 
             Source: 
             - Github: https://github.com/Youknow2509/Example_BE
-        `)
+        `
+
+    const path = 'api';
+
+    const config = new DocumentBuilder()
+        .setTitle(title)
+        .setVersion(version)
+        .addTag(tag)
+        .setDescription(decription)
         .build();
         
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup(path, app, document);
 };
 
 bootstrap();
