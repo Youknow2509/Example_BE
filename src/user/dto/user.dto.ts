@@ -10,6 +10,7 @@ import {
     IsNotEmpty,
     IsStrongPassword,
     IsIn,
+    IsArray,
 } from 'class-validator';
 
 export class User {
@@ -74,6 +75,11 @@ export class User {
     @Type(() => Date)
     @IsNotEmpty()
     updated_at: Date;
+
+    // Role
+    @IsNotEmpty()
+    @IsArray()
+    roles: string[];
 
     // is deleted
     @IsBoolean()
