@@ -53,7 +53,11 @@ export class AuthService {
      */
     private createGenerateAuthUrl() : string {
         return this.oAuth2Client.generateAuthUrl({
+            // Use refresh_token to get a new token when the old one expires.
+            // It only create a refresh token in first time.
             access_type: 'offline',
+            
+            // Specify the scopes you need.
             scope: this.SCOPES,
         });
     }

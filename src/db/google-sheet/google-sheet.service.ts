@@ -23,30 +23,35 @@ export class GoogleSheetService {
     ) {
         this.OauthClient = this.authService.getOAuth2Client();
         try {
-            this.tokenData = JSON.parse(fs.readFileSync(this.tokenPath, 'utf8'));
+            this.tokenData = JSON.parse(
+                fs.readFileSync(this.tokenPath, 'utf8'),
+            );
         } catch (error) {
-            console.log('File not found or dont have token - Creat token in /create-token', error);
+            console.log(
+                'File not found or dont have token - Creat token in /create-token',
+                error,
+            );
         }
 
         this.OauthClient.setCredentials(this.tokenData);
-        
+
         this.googleSheet = google.sheets({
-                    version: 'v4',
-                    auth: this.OauthClient,
+            version: 'v4',
+            auth: this.OauthClient,
         });
     }
 
     // Methods
 
-    /** 
+    /**
      * Get all User
      * @return {any} All information user in google sheet
-    */
+     */
     async getUsers() {
         return this.handleDataService.getUsers(this.googleSheet);
     }
 
-    /** 
+    /**
      * Get Id current
      * @return {int} Id current
      */
@@ -54,7 +59,7 @@ export class GoogleSheetService {
         return this.handleDataService.getIdUserCurrent(this.googleSheet);
     }
 
-    /** 
+    /**
      * Append Data User
      * @param {CreateUser} user - Create User Object to append to google sheet
      */
@@ -64,17 +69,17 @@ export class GoogleSheetService {
 
     /**
      * Upgrade User
-     * @param {User} user 
+     * @param {User} user
      * @returns
      */
     async upgradeUser(user: User) {
         return this.handleDataService.upgradeUser(this.googleSheet, user);
     }
 
-    /** 
+    /**
      * Find User with id
      * @param {number} id - Id User
-     * @return {User | undefined} 
+     * @return {User | undefined}
      */
     async findUser(id: number) {
         return this.handleDataService.findUser(this.googleSheet, id);
