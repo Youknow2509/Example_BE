@@ -7,5 +7,6 @@ import { GoogleSheetModule } from '../db/google-sheet/google-sheet.module';
     imports: [GoogleSheetModule],
     providers: [UserService],
     controllers: [UserController],
+    exports: [UserService],
 })
 export class UserModule {}
