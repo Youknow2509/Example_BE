@@ -1,15 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { userSignIn } from 'src/user/dto';
+import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
     // Constructor
     constructor(
-        private readonly userService: UserService
-    ) {
-   
-    }
+        private readonly userService: UserService,
+        private readonly jwtService: JwtService,
+    ) {}
 
     // Methods
 
@@ -19,7 +18,9 @@ export class AuthService {
     async signIn(
         userName: string, 
         pass: string
-    ): Promise<any> {
+    ): Promise<{
+        access_token: string 
+    }> {
         const user = await this.userService.findUserByUserName(userName);
 
         if (!user) {
@@ -30,8 +31,10 @@ export class AuthService {
             throw new UnauthorizedException('Invalid password');
         }
 
-        const { password, is_deleted, roles,  ...result } = user;
-        
-        return result;
+        const payload = { sub: user.id, username: user.user };
+
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
     }
 }
