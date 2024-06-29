@@ -253,6 +253,23 @@ export class UserService {
         return users.find(u => Number(u.id) === identifier);
     }
 
+    /**
+     * FindOne - Handle find User with username
+     * @param {string} username 
+     * @param googleSheet 
+     * @returns {User}
+     */
+    async findOne(
+        googleSheet: any, 
+        username: string
+    ): Promise<User> {
+        const users: User[] = await this.getUsers(googleSheet);
+        if (!users) {
+            return null;
+        }
+        return users.find(u => u.user === username);
+    }
+
     /*
      * Help function get Id current
      * GetIdCurrent

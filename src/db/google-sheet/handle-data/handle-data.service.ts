@@ -56,6 +56,16 @@ export class HandleDataService {
         return this.userService.findUser(googleSheet, id);
     }
 
+    /**
+     * Find User with username
+     * @param {any} googleSheet 
+     * @param {string} username - Username User
+     * @return {User | undefined}
+     */
+    async findUserWithUserName(googleSheet: any, username: string): Promise<User> {
+        return this.userService.findOne(googleSheet, username);
+    }
+
     /** 
      * Delete User with id
      * @param {any} googleSheet 

@@ -86,6 +86,18 @@ export class GoogleSheetService {
     }
 
     /**
+     * Find User with user name
+     * @param {string} name - User name
+     * @return {User | undefined}
+     */
+    async findUserByUserName(userName: string) {
+        return this.handleDataService.findUserWithUserName(
+            this.googleSheet,
+            userName,
+        );
+    }
+
+    /**
      * Delete User with id
      * @param { number } id - Id User
      * @return {}
