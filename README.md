@@ -42,6 +42,8 @@ Ex:
         SHEETS_ID_USER={YOUR_SHEETS_ID_USER}
         SHEETS_RANGE_USER='YOUR_SHEETS_RANGE_USER'
         PATH_LOG='./src'
+        JWT_SECRET_KEY={YOUR_JWT_SECRET_KEY}
+        
     ```
 
 - Run: 
