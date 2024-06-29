@@ -1,35 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { User } from 'src/user/dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { userSignIn } from 'src/user/dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
-
     // Constructor
-    constructor() {
-        console.log('AuthService');
+    constructor(
+        private readonly userService: UserService
+    ) {
+   
     }
 
     // Methods
 
-    /*
-     *   Register
-     *   @param user: User
+    /**
+     * Sign in
      */
-    register(user: User): User {
-        return user;
-    }
+    async signIn(
+        userName: string, 
+        pass: string
+    ): Promise<any> {
+        const user = await this.userService.findUserByUserName(userName);
 
-    /* 
-     *   Login
-     */
-    login() {
-        console.log('Login');
-    }
+        if (!user) {
+            throw new UnauthorizedException('User not found');
+        }
 
-    /* 
-     *   Logout
-     */
-    logout() {
-        console.log('Logout');
+        if (user?.password !== pass) {
+            throw new UnauthorizedException('Invalid password');
+        }
+
+        const { password, is_deleted, roles,  ...result } = user;
+        
+        return result;
     }
 }
