@@ -7,10 +7,12 @@ import {
     Body,
     Param,
     ParseIntPipe,
+    UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User, CreateUser } from './dto';
-import { unescape } from 'querystring';
+import { AuthGuard } from '../auth/auth.guard';
+import { Roles } from 'src/decorator/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -18,6 +20,8 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     // Get all user
+    @Roles('admin')
+    @UseGuards(AuthGuard)
     @Get()
     getAll(): any {
         return this.userService.getUsers();

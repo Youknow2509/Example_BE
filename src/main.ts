@@ -49,9 +49,18 @@ const handleSwaggerModuleAPI = (app : any): void => {
         .setVersion(version)
         .addTag(tag)
         .setDescription(decription)
+        .addBearerAuth({
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            name: 'Authorization',
+            in: 'header',
+            description: 'JWT Authorization header using the Bearer scheme. Example: Bearer <token>',
+        })
         .build();
         
     const document = SwaggerModule.createDocument(app, config);
+
     SwaggerModule.setup(path, app, document);
 };
 
