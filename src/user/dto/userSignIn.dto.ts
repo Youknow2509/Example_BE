@@ -16,7 +16,7 @@ export class userSignIn {
     @ApiProperty({
         type:'string',
         description: 'User name',
-        example: 'abc123'
+        example: 'us1'
     })
     user: string;
 
@@ -25,7 +25,7 @@ export class userSignIn {
     @ApiProperty({
         type:'string',
         description: 'Password',
-        example: 'ookLvA!pHbyDay=kwwmNNE.F0'
+        example: 'asasfasde1312@'
     })
     password: string; 
 
