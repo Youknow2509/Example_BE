@@ -4,9 +4,11 @@ import { jwtConstants } from './constants';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
+import { GoogleSheetModule } from '../db/google-sheet/google-sheet.module';
 
 @Module({
     imports: [
+        GoogleSheetModule,
         UserModule,
         JwtModule.register({
             global: true,

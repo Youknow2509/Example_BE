@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
+import { GoogleSheetService } from '../db/google-sheet/google-sheet.service';
 
 @Injectable()
 export class AuthService {
     // Constructor
     constructor(
-        private readonly userService: UserService,
+        private readonly googleSheetService: GoogleSheetService,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -21,7 +21,7 @@ export class AuthService {
     ): Promise<{
         access_token: string 
     }> {
-        const user = await this.userService.findUserByUserName(userName);
+        const user = await this.googleSheetService.findUserByUserName(userName);
 
         if (!user) {
             throw new UnauthorizedException('User not found');
