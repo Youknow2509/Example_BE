@@ -353,7 +353,7 @@ export class UserService {
      * @param {User} user -
      * @return {Promise<any>} -
      */
-    async check(
+    async check( // TODO optimize
         googleSheet: any,
         user: User,
     ): Promise<{

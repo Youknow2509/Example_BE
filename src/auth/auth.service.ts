@@ -26,7 +26,7 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException('User not found');
         }
-
+        // TODO use BcryptCompare pass 
         if (user?.password !== pass) {
             throw new UnauthorizedException('Invalid password');
         }
