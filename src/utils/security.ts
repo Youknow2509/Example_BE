@@ -8,6 +8,7 @@ const iv = Buffer.from(process.env.IV_ENCRYPTION, 'hex');
 const salt = Buffer.from(process.env.SALT_ENCRYPTION, 'hex');
 const password = process.env.PASSWORD_ENCRYPTION || 'github: Youknow.2509';
 const algorithm = process.env.ALGORITHM_ENCRYPTION || '';
+const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 
 /**
  * Function encrytion data
@@ -62,9 +63,6 @@ export const Decryption = async (encryptedData: string): Promise<string> => {
  */
 export const BcryptHash = async (data: string): Promise<string> => {
     try {
-        // Generate a salt
-        const saltRounds = 10; // This should be a number, not the data variable
-
         // Hash the data with the salt
         const hashedData = await bcrypt.hash(data, saltRounds);
 
