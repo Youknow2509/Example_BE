@@ -246,10 +246,7 @@ export class UserService {
     async findUser(
         googleSheet: any,
         identifier: number,
-    ): Promise<
-        User
-        
-    > {
+    ): Promise<User> {
         try {
             const res: any = await googleSheet.spreadsheets.values.get({
                 spreadsheetId: this.spreadsheetId,
@@ -293,11 +290,36 @@ export class UserService {
      * @returns {User}
      */
     async findOne(googleSheet: any, username: string): Promise<User> {
-        const users: User[] = await this.getUsers(googleSheet);
-        if (!users) {
-            return null;
+        // Get all user name and compare
+        try {
+            const res: any = await googleSheet.spreadsheets.values.get({
+                spreadsheetId: this.spreadsheetId,
+                range: `Users!B2:B`,
+            });
+
+            const rows: string[][] | null | undefined = res.data.values;
+
+            if (!rows) {
+                throw {
+                    statusCode: 404,
+                    message: 'User not found',
+                };
+    
+            }
+            username = await Encryption(username);
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i][0] === username) {
+                    return await this.findUser(googleSheet, i + 1);
+                }
+            }
+            throw {
+                statusCode: 404,
+                message: 'User not found',
+            }
+        } catch (err) {
+            console.log('Err in handle find one with username');
+            throw err;
         }
-        return users.find((u) => u.user === username);
     }
 
     /*
