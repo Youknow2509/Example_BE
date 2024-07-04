@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { createCipheriv, scrypt, createDecipheriv } from 'crypto';
 import { promisify } from 'util';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 // Import variables in .env
 const iv = Buffer.from(process.env.IV_ENCRYPTION, 'hex');
@@ -55,27 +55,30 @@ export const Decryption = async (encryptedData: string): Promise<string> => {
     }
 };
 
-/** 
- * 
+/**
+ * Function to hash data using bcrypt
+ * @param { string } data - Data to be hashed
+ * @returns { Promise<string> } - Hashed data
  */
 export const BcryptHash = async (data: string): Promise<string> => {
     try {
         // Generate a salt
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
+        const saltRounds = 10; // This should be a number, not the data variable
 
-        // Hash the password with the salt
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Hash the data with the salt
+        const hashedData = await bcrypt.hash(data, saltRounds);
 
-        return hashedPassword;
+        return hashedData;
     } catch (error) {
-        console.error('Error hashing password:', error);
+        console.error('Error hashing data:', error);
         throw error;
     }
 }
 
-/**
- * 
+/** Function compare data after hash
+ * @param { string } data - data want compare
+ * @param { string } hashedData - data after hassh
+ * @returns { Promise<boolean> } true if match, false if not
  */
 export const BcryptCompare = async (data: string, hashedData: string): Promise<boolean> => {
     try {
