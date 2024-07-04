@@ -1,6 +1,7 @@
 import 'dotenv/config';
-import { createCipheriv, randomBytes, scrypt, createDecipheriv } from 'crypto';
+import { createCipheriv, scrypt, createDecipheriv } from 'crypto';
 import { promisify } from 'util';
+import bcrypt from 'bcrypt';
 
 // Import variables in .env
 const iv = Buffer.from(process.env.IV_ENCRYPTION, 'hex');
@@ -11,7 +12,7 @@ const algorithm = process.env.ALGORITHM_ENCRYPTION || '';
 /**
  * Function encrytion data
  * @param { string } data - data want encrytion
- * @returns { string } data after encoding
+ * @returns { Promise<string> } data after encoding
  */
 export const Encryption = async (data: string): Promise<string> => {
     try {
@@ -53,3 +54,37 @@ export const Decryption = async (encryptedData: string): Promise<string> => {
         throw error; // Throw error for handling
     }
 };
+
+/** 
+ * 
+ */
+export const BcryptHash = async (data: string): Promise<string> => {
+    try {
+        // Generate a salt
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+
+        // Hash the password with the salt
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        return hashedPassword;
+    } catch (error) {
+        console.error('Error hashing password:', error);
+        throw error;
+    }
+}
+
+/**
+ * 
+ */
+export const BcryptCompare = async (data: string, hashedData: string): Promise<boolean> => {
+    try {
+        // Compare the provided password with the stored hash
+        const match = await bcrypt.compare(data, hashedData);
+        return match;
+    } catch (error) {
+        console.error('Error comparing passwords:', error);
+        throw error;
+    }
+};
+
