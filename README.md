@@ -10,6 +10,7 @@
 - Auth
 - REST API
 - Authorization, roles
+- Encryption and Hashing data
 - v.v 
 
 # How to use it:
