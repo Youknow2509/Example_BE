@@ -31,7 +31,6 @@ export class AuthGuardRole implements CanActivate {
         const request = context.switchToHttp().getRequest();
 
         const token = this.extractTokenFromHeader(request);
-
         if (!token) {
             throw new UnauthorizedException();
         }
@@ -39,7 +38,7 @@ export class AuthGuardRole implements CanActivate {
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: jwtConstants.secret,
             });
-            const rolesUser = payload.roles.split(',').map(r => r.trim());
+            const rolesUser = payload.roles;
             request['user'] = {
                 id: payload.sub,
                 roles: rolesUser,
