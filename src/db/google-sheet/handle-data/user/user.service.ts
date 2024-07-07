@@ -242,15 +242,41 @@ export class UserService {
      * @param {string | number} identifier
      * @returns {User}
      */
-    async findUser(
-        googleSheet: any, 
-        identifier: number
-    ): Promise<User> {
-        const users: User[] = await this.getUsers(googleSheet);
-        if (!users) {
-            return null;
+    async findUser(googleSheet: any, identifier: number): Promise<User> {
+        try {
+            const res: any = await googleSheet.spreadsheets.values.get({
+                spreadsheetId: this.spreadsheetId,
+                range: `Users!A${Number(identifier) + 1}:M${Number(identifier) + 1}`,
+            });
+
+            const cols: string[][] | null | undefined = res.data.values;
+
+            if (!cols) {
+                throw {
+                    statusCode: 404,
+                    message: 'User not found',
+                };
+            }
+            return new User({
+                id: Number(await Decryption(cols[0][0])),
+                user: await Decryption(cols[0][1]),
+                firstName: await Decryption(cols[0][2]),
+                lastName: await Decryption(cols[0][3]),
+                email: await Decryption(cols[0][4]),
+                password: 'Hash password: ' + cols[0][5],
+                birthday: new Date(await Decryption(cols[0][6])),
+                gender: await Decryption(cols[0][7]),
+                phone: await Decryption(cols[0][8]),
+                created_at: new Date(await Decryption(cols[0][9])),
+                updated_at: new Date(await Decryption(cols[0][10])),
+                roles: (await Decryption(cols[0][11])).split(','),
+                is_deleted:
+                    (await Decryption(cols[0][12])).toLowerCase() === 'true',
+            });
+        } catch (err) {
+            console.log('Err handle find User');
+            throw err;
         }
-        return users.find(u => Number(u.id) === identifier);
     }
 
     /**
@@ -301,39 +327,55 @@ export class UserService {
      * @param {User} user - 
      * @return {Promise<any>} - 
      */
-    async check (
-        googleSheet: any, 
-        user: User
-    ): Promise<{
-        message: string;
-        statusCode: number;
-    }> {
-        const users: User[] = await this.getUsers(googleSheet);
-        for (var i = 0; i < users.length; i++) {
-            if (
-                users[i].user === user.user 
-            ) {
-                return {
-                    message: "User bi trung !!!",
-                    statusCode: 400,
-                };
+    async check(
+        // TODO optimize
+        googleSheet: any,
+        user: User,
+    ): Promise<boolean> {
+        const ranges = [
+            'Users!B2:B', // Range username
+            'Users!E2:E', // Range email
+            'Users!I2:I', // Range phone
+        ];
+        try {
+            const result = await googleSheet.spreadsheets.values.batchGet({
+                spreadsheetId: this.spreadsheetId,
+                ranges,
+            });
+            // Handle check
+            user.user = await Encryption(user.user);
+            user.email = await Encryption(user.email);
+            user.phone = await Encryption(user.phone);
+            for (var i = 0; i < result.data.valueRanges[0].values.length; i++) {
+                if (i + 1 !== user.id) {
+                    if (result.data.valueRanges[0].values[i][0] === user.user) {
+                        throw {
+                            message: 'User bi trung!',
+                            statusCode: 400,
+                        };
+                    }
+                    if (
+                        result.data.valueRanges[1].values[i][0] === user.email
+                    ) {
+                        throw {
+                            message: 'Email bi trung!',
+                            statusCode: 400,
+                        };
+                    }
+                    if (
+                        result.data.valueRanges[2].values[i][0] === user.phone
+                    ) {
+                        throw {
+                            message: 'Phone bi trung!',
+                            statusCode: 400,
+                        };
+                    }
+                }
             }
-            if (
-                users[i].email === user.email 
-            ) {
-                return {
-                    message: "Email bi trung !!!",
-                    statusCode: 400,
-                };
-            }
-            if (
-                users[i].phone === user.phone 
-            ) {
-                return {
-                    message: "Phone bi trung !!!",
-                    statusCode: 400,
-                };
-            }
+            return true;
+        } catch (err) {
+            console.log('Err in checking');
+            throw err;
         }
     }
 }
