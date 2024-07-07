@@ -97,46 +97,43 @@ export class UserService {
             id: parseInt(await this.getIdCurrent(googleSheet)) + 1,
         });
 
-        const c: any = await this.check(googleSheet, user);
-        if (c && c.statusCode === 400) {
-            return c;
-        }
+        if (await this.check(googleSheet, user)) {
+            const value: any = [
+                await Encryption(user.id.toString()),
+                await Encryption(user.user),
+                await Encryption(user.firstName),
+                await Encryption(user.lastName),
+                await Encryption(user.email),
+                // Hash password with bcrypt
+                await BcryptHash(user.password),
+                await Encryption(user.birthday.toString()),
+                await Encryption(user.gender),
+                await Encryption(user.phone),
+                await Encryption(user.created_at.toString()),
+                await Encryption(user.updated_at.toString()),
+                await Encryption(user.roles.toString()),
+                await Encryption(user.is_deleted.toString()),
+            ];
 
-        const value: any = [
-            await Encryption(user.id.toString()),
-            await Encryption(user.user),
-            await Encryption(user.firstName),
-            await Encryption(user.lastName),
-            await Encryption(user.email),
-            // Hash password with bcrypt
-            await BcryptHash(user.password),
-            await Encryption(user.birthday.toString()),
-            await Encryption(user.gender),
-            await Encryption(user.phone),
-            await Encryption(user.created_at.toString()),
-            await Encryption(user.updated_at.toString()),
-            await Encryption(user.roles.toString()),
-            await Encryption(user.is_deleted.toString()),
-        ];
-
-        try {
-            const result = await googleSheet.spreadsheets.values.append({
-                spreadsheetId: this.spreadsheetId,
-                range: this.range,
-                valueInputOption: 'USER_ENTERED',
-                insertDataOption: 'INSERT_ROWS',
-                resource: {
-                    values: [value],
-                },
-            });
-            return result.config.data.values; // todo change
-        } catch (err) {
-            throw new Error(
-                'The API returned an error: ' +
-                    err +
-                    ' (ERR: appendData in )' +
-                    __dirname,
-            );
+            try {
+                const result = await googleSheet.spreadsheets.values.append({
+                    spreadsheetId: this.spreadsheetId,
+                    range: this.range,
+                    valueInputOption: 'USER_ENTERED',
+                    insertDataOption: 'INSERT_ROWS',
+                    resource: {
+                        values: [value],
+                    },
+                });
+                return result.config.data.values; // todo change
+            } catch (err) {
+                throw new Error(
+                    'The API returned an error: ' +
+                        err +
+                        ' (ERR: appendData in )' +
+                        __dirname,
+                );
+            }
         }
     }
 
@@ -147,45 +144,44 @@ export class UserService {
      * @returns
      */
     async upgradeUser(googleSheet: any, user: User): Promise<any> {
-        // const c: any = await this.check(googleSheet, user); 
-        // if (c && c.statusCode === 400) {
-        //     return c;
-        // }
-
-        try {
-            const result = await googleSheet.spreadsheets.values.update({
-                spreadsheetId: this.spreadsheetId,
-                range: `Users!A${Number(user.id) + 1}:M${Number(user.id) + 1}`,
-                valueInputOption: 'USER_ENTERED',
-                resource: {
-                    values: [
-                        [
-                            await Encryption(user.id.toString()),
-                            await Encryption(user.user),
-                            await Encryption(user.firstName),
-                            await Encryption(user.lastName),
-                            await Encryption(user.email),
-                            // Hash password with bcrypt
-                            await BcryptHash(user.password),
-                            await Encryption(user.birthday.toString()),
-                            await Encryption(user.gender),
-                            await Encryption(user.phone),
-                            await Encryption(user.created_at.toString()),
-                            await Encryption(user.updated_at.toString()),
-                            await Encryption(user.roles.toString()),
-                            await Encryption(user.is_deleted.toString()),
+        if (await this.check(googleSheet, user) && 
+            user.id <= await this.getIdCurrent(googleSheet)) 
+        {
+            try {
+                const result = await googleSheet.spreadsheets.values.update({
+                    spreadsheetId: this.spreadsheetId,
+                    range: `Users!A${Number(user.id) + 1}:M${Number(user.id) + 1}`,
+                    valueInputOption: 'USER_ENTERED',
+                    resource: {
+                        values: [
+                            [
+                                await Encryption(user.id.toString()),
+                                await Encryption(user.user),
+                                await Encryption(user.firstName),
+                                await Encryption(user.lastName),
+                                await Encryption(user.email),
+                                // Hash password with bcrypt
+                                await BcryptHash(user.password),
+                                await Encryption(user.birthday.toString()),
+                                await Encryption(user.gender),
+                                await Encryption(user.phone),
+                                await Encryption(user.created_at.toString()),
+                                await Encryption(user.updated_at.toString()),
+                                await Encryption(user.roles.toString()),
+                                await Encryption(user.is_deleted.toString()),
+                            ],
                         ],
-                    ],
-                },
-            });
-            return result.config.data.values; // todo change
-        } catch (err) {
-            throw new Error(
-                'The API returned an error: ' +
-                    err +
-                    ' (ERR: upgradeUser in )' +
-                    __dirname,
-            );
+                    },
+                });
+                return result.config.data.values; // todo change
+            } catch (err) {
+                throw new Error(
+                    'The API returned an error: ' +
+                        err +
+                        ' (ERR: upgradeUser in )' +
+                        __dirname,
+                );
+            }
         }
     }
 
@@ -353,10 +349,7 @@ export class UserService {
         // TODO optimize
         googleSheet: any,
         user: User,
-    ): Promise<{
-        message: string;
-        statusCode: number;
-    }> {
+    ): Promise<boolean> {
         const ranges = [
             'Users!B2:B', // Range username
             'Users!E2:E', // Range email
@@ -367,31 +360,37 @@ export class UserService {
                 spreadsheetId: this.spreadsheetId,
                 ranges,
             });
-            // Handle 
+            // Handle check
             user.user = await Encryption(user.user);
             user.email = await Encryption(user.email);
             user.phone = await Encryption(user.phone);
             for (var i = 0; i < result.data.valueRanges[0].values.length; i++) {
-                if (result.data.valueRanges[0].values[i][0] === user.user) {
-                    return {
-                        message: 'User bi trung!',
-                        statusCode: 400,
-                    };
-                } 
-                if (result.data.valueRanges[1].values[i][0] === user.email) {
-                    return {
-                        message: 'Email bi trung!',
-                        statusCode: 400,
-                    };
-                }
-                if (result.data.valueRanges[2].values[i][0] === user.phone) {
-                    return {
-                        message: 'Phone bi trung!',
-                        statusCode: 400,
-                    };
+                if (i + 1 !== user.id) {
+                    if (result.data.valueRanges[0].values[i][0] === user.user) {
+                        throw {
+                            message: 'User bi trung!',
+                            statusCode: 400,
+                        };
+                    }
+                    if (
+                        result.data.valueRanges[1].values[i][0] === user.email
+                    ) {
+                        throw {
+                            message: 'Email bi trung!',
+                            statusCode: 400,
+                        };
+                    }
+                    if (
+                        result.data.valueRanges[2].values[i][0] === user.phone
+                    ) {
+                        throw {
+                            message: 'Phone bi trung!',
+                            statusCode: 400,
+                        };
+                    }
                 }
             }
-            return null;
+            return true;
         } catch (err) {
             console.log('Err in checking');
             throw err;
