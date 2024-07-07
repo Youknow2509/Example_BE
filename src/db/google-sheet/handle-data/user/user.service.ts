@@ -49,7 +49,7 @@ export class UserService {
                             firstName: await Decryption(rows[i][2]),
                             lastName: await Decryption(rows[i][3]),
                             email: await Decryption(rows[i][4]),
-                            password: 'Hash password: ' + rows[i][5],
+                            password: rows[i][5],
                             birthday: new Date(await Decryption(rows[i][6])),
                             gender: await Decryption(rows[i][7]),
                             phone: await Decryption(rows[i][8]),
