@@ -147,7 +147,7 @@ export class UserService {
      * @returns
      */
     async upgradeUser(googleSheet: any, user: User): Promise<any> {
-        // const c: any = await this.check(googleSheet, user);
+        // const c: any = await this.check(googleSheet, user); 
         // if (c && c.statusCode === 400) {
         //     return c;
         // }
@@ -243,10 +243,7 @@ export class UserService {
      * @param {string | number} identifier
      * @returns {User}
      */
-    async findUser(
-        googleSheet: any,
-        identifier: number,
-    ): Promise<User> {
+    async findUser(googleSheet: any, identifier: number): Promise<User> {
         try {
             const res: any = await googleSheet.spreadsheets.values.get({
                 spreadsheetId: this.spreadsheetId,
@@ -304,7 +301,6 @@ export class UserService {
                     statusCode: 404,
                     message: 'User not found',
                 };
-    
             }
             username = await Encryption(username);
             for (var i = 0; i < rows.length; i++) {
@@ -315,7 +311,7 @@ export class UserService {
             throw {
                 statusCode: 404,
                 message: 'User not found',
-            }
+            };
         } catch (err) {
             console.log('Err in handle find one with username');
             throw err;
@@ -353,33 +349,52 @@ export class UserService {
      * @param {User} user -
      * @return {Promise<any>} -
      */
-    async check( // TODO optimize
+    async check(
+        // TODO optimize
         googleSheet: any,
         user: User,
     ): Promise<{
         message: string;
         statusCode: number;
     }> {
-        const users: User[] = await this.getUsers(googleSheet);
-        for (var i = 0; i < users.length; i++) {
-            if (users[i].user === user.user) {
-                return {
-                    message: 'User bi trung !!!',
-                    statusCode: 400,
-                };
+        const ranges = [
+            'Users!B2:B', // Range username
+            'Users!E2:E', // Range email
+            'Users!I2:I', // Range phone
+        ];
+        try {
+            const result = await googleSheet.spreadsheets.values.batchGet({
+                spreadsheetId: this.spreadsheetId,
+                ranges,
+            });
+            // Handle 
+            user.user = await Encryption(user.user);
+            user.email = await Encryption(user.email);
+            user.phone = await Encryption(user.phone);
+            for (var i = 0; i < result.data.valueRanges[0].values.length; i++) {
+                if (result.data.valueRanges[0].values[i][0] === user.user) {
+                    return {
+                        message: 'User bi trung!',
+                        statusCode: 400,
+                    };
+                } 
+                if (result.data.valueRanges[1].values[i][0] === user.email) {
+                    return {
+                        message: 'Email bi trung!',
+                        statusCode: 400,
+                    };
+                }
+                if (result.data.valueRanges[2].values[i][0] === user.phone) {
+                    return {
+                        message: 'Phone bi trung!',
+                        statusCode: 400,
+                    };
+                }
             }
-            if (users[i].email === user.email) {
-                return {
-                    message: 'Email bi trung !!!',
-                    statusCode: 400,
-                };
-            }
-            if (users[i].phone === user.phone) {
-                return {
-                    message: 'Phone bi trung !!!',
-                    statusCode: 400,
-                };
-            }
+            return null;
+        } catch (err) {
+            console.log('Err in checking');
+            throw err;
         }
     }
 }
