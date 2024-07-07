@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleSheetService } from '../db/google-sheet/google-sheet.service';
+import { BcryptCompare, BcryptHash } from '../utils/';
 
 @Injectable()
 export class AuthService {
@@ -26,11 +27,10 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException('User not found');
         }
-        // TODO use BcryptCompare pass 
-        if (user?.password !== pass) {
+
+        if (!await BcryptCompare(pass, user.password)) {
             throw new UnauthorizedException('Invalid password');
         }
-
         const payload = { 
             sub: user.id, 
             username: user.user ,
