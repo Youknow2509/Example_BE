@@ -260,7 +260,7 @@ export class UserService {
                 firstName: await Decryption(cols[0][2]),
                 lastName: await Decryption(cols[0][3]),
                 email: await Decryption(cols[0][4]),
-                password: 'Hash password: ' + cols[0][5],
+                password: cols[0][5],
                 birthday: new Date(await Decryption(cols[0][6])),
                 gender: await Decryption(cols[0][7]),
                 phone: await Decryption(cols[0][8]),
@@ -346,7 +346,6 @@ export class UserService {
      * @return {Promise<any>} -
      */
     async check(
-        // TODO optimize
         googleSheet: any,
         user: User,
     ): Promise<boolean> {
