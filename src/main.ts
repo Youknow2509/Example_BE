@@ -7,6 +7,8 @@ import * as morgan from 'morgan';
 import * as fs from 'fs';
 import * as path from 'path';
 import helmet from 'helmet';
+import * as csurf from 'csurf';
+
 
 async function bootstrap() {
     const PORT = 3000;
@@ -118,6 +120,13 @@ const handleCors = (app: any): void => {
 
     };
     app.enableCors(corsOptions);
+};
+
+// Handle CSRF 
+const handleCsrf = (app: any): void => {
+    app.use(
+        csurf()
+    );
 };
 
 bootstrap();
