@@ -34,7 +34,7 @@ const handleLog = (app: any): void => {
     app.use(morgan('combined', { stream: accessLogStream }));
 };
 
-// Swagger module API 
+// Swagger module API
 const handleSwaggerModuleAPI = (app: any): void => {
     const title: string = 'V';
     const version: string = '1.0';
@@ -70,7 +70,7 @@ const handleSwaggerModuleAPI = (app: any): void => {
     SwaggerModule.setup(path, app, document);
 };
 
-// HelmetJS module for security 
+// HelmetJS module for security
 const handleHelmet = (app: any): void => {
     app.use(
         helmet({
@@ -92,6 +92,32 @@ const handleHelmet = (app: any): void => {
             },
         }),
     );
+};
+
+// Handle CORS
+const handleCors = (app: any): void => {
+    // White list for CORS requests globally
+    const whitelist: string[] = [
+        'https://3000-idx-nestjs-1718477108815.cluster-bec2e4635ng44w7ed22sa22hes.cloudworkstations.dev/', 
+        'https://example.com'
+    ];
+
+    const corsOptions = {
+        // Chỉ cho phép các yêu cầu từ domain này
+        origin: function (origin, callback) {
+            if (whitelist.indexOf(origin) !== -1 || !origin) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Chỉ cho phép các phương thức này
+        allowedHeaders: ['Content-Type', 'Authorization'], // Chỉ cho phép các header này
+        credentials: true, // Cho phép gửi cookie
+        optionsSuccessStatus: 204 // Một số trình duyệt cũ sẽ không hiểu trạng thái 204
+
+    };
+    app.enableCors(corsOptions);
 };
 
 bootstrap();

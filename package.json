@@ -30,6 +30,7 @@
         "class-transformer": "^0.5.1",
         "class-validate": "^0.0.1",
         "class-validator": "^0.14.1",
+        "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "googleapis": "^140.0.0",
         "helmet": "^7.1.0",
