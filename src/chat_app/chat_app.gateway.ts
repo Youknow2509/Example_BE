@@ -63,22 +63,9 @@ export class ChatAppGateway
     }
 
     /**
-     * Event handler for new messages
-     * @param client 
-     * @param payload 
-     */
-    @SubscribeMessage('newMessage')
-    handleMessage(
-        client: Socket,
-        payload: { sender: string; message: string },
-    ): void {
-        this.server.emit('message', payload);
-    }
-
-    /**
-     * Event handler for replying to messages
-     * @param client 
-     * @param payload 
+     * Event handler for replyMessage
+     * @param client
+     * @param payload
      */
     @SubscribeMessage('replyMessage')
     handleReply(
@@ -87,8 +74,31 @@ export class ChatAppGateway
     ): void {
         const recipientClient = this.connectedClients.get(payload.recipient);
         if (recipientClient) {
-            recipientClient.emit('message', payload);
+            recipientClient.emit('message', payload.message);
+        } else {
+            client.emit('replyError', {
+                recipient: payload.recipient,
+                message: 'User not found',
+            });
         }
     }
+
+    /**
+     * Event handler for messageAll
+     * @param client
+     * @param payload { sender: string; message: string }
+     */
+    @SubscribeMessage('messageAll')
+    handleNewMessage(
+        clientSocket: Socket,
+        payload: { sender: string; message: string },
+    ): void {
+        Array.from(this.connectedClients).forEach(([id, client]) => {
+            if (id !== clientSocket.id) {
+                client.emit('message', payload.message);
+            }
+        });
+    }
+
     // TODO: Add more event handlers
 }
