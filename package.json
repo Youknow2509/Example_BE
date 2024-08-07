@@ -24,10 +24,12 @@
     "@nestjs/class-validator": "^0.13.1",
     "@nestjs/common": "^10.3.10",
     "@nestjs/core": "^10.3.10",
+    "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.3.10",
     "@nestjs/websockets": "^10.3.10",
     "class-transformer": "^0.5.1",
+    "dotenv": "^16.4.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
