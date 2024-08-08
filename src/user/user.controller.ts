@@ -31,7 +31,7 @@ export class UserController {
     }
 
     // Add user
-    @Roles('user')
+    @Roles(Role.ADMIN)
     @UseGuards(AuthGuardRole)
     @ApiBearerAuth()
     @Post()
@@ -40,7 +40,7 @@ export class UserController {
     }
     
     // Upgrade user
-    @Roles('admin')
+    @Roles(Role.ADMIN)
     @UseGuards(AuthGuardRole)
     @ApiBearerAuth()
     @Put('/upgrade')
@@ -50,7 +50,7 @@ export class UserController {
     }
 
     // Find user
-    @Roles('admin')
+    @Roles(Role.ADMIN)
     @UseGuards(AuthGuardRole)
     @ApiBearerAuth()
     @Get(':id')
@@ -59,7 +59,7 @@ export class UserController {
     }
 
     // Delete user
-    @Roles('admin')
+    @Roles(Role.ADMIN)
     @UseGuards(AuthGuardRole)
     @ApiBearerAuth()
     @Delete(':id')
@@ -68,7 +68,7 @@ export class UserController {
     }
 
     // Restore user
-    @Roles('admin')
+    @Roles(Role.ADMIN)
     @UseGuards(AuthGuardRole)
     @ApiBearerAuth()
     @Put(':id/restore')
