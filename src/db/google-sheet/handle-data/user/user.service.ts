@@ -97,6 +97,8 @@ export class UserService {
             id: parseInt(await this.getIdCurrent(googleSheet)) + 1,
         });
 
+        console.log('Append data: ', user);
+
         if (await this.check(googleSheet, user)) {
             const value: any = [
                 await Encryption(user.id.toString()),
@@ -144,9 +146,10 @@ export class UserService {
      * @returns
      */
     async upgradeUser(googleSheet: any, user: User): Promise<any> {
-        if (await this.check(googleSheet, user) && 
-            user.id <= await this.getIdCurrent(googleSheet)) 
-        {
+        if (
+            (await this.check(googleSheet, user)) &&
+            user.id <= (await this.getIdCurrent(googleSheet))
+        ) {
             try {
                 const result = await googleSheet.spreadsheets.values.update({
                     spreadsheetId: this.spreadsheetId,
@@ -173,6 +176,7 @@ export class UserService {
                         ],
                     },
                 });
+                console.log('Upgrade data: ', user);
                 return result.config.data.values; // todo change
             } catch (err) {
                 throw new Error(
@@ -327,7 +331,7 @@ export class UserService {
             });
 
             const rows: any[][] | null | undefined = res.data.values;
-
+            if (!rows) return 0;
             return rows.length - 1;
         } catch (err) {
             throw new Error(
@@ -345,39 +349,56 @@ export class UserService {
      * @param {User} user -
      * @return {Promise<any>} -
      */
-    async check (
-        googleSheet: any, 
-        user: User
-    ): Promise<{
-        message: string;
-        statusCode: number;
-    }> {
-        const users: User[] = await this.getUsers(googleSheet);
-        for (var i = 0; i < users.length; i++) {
-            if (
-                users[i].user === user.user 
-            ) {
-                return {
-                    message: "User bi trung !!!",
-                    statusCode: 400,
-                };
+    async check(
+        // TODO optimize
+        googleSheet: any,
+        user: User,
+    ): Promise<boolean> {
+        const ranges = [
+            'Users!B2:B', // Range username
+            'Users!E2:E', // Range email
+            'Users!I2:I', // Range phone
+        ];
+        try {
+            const result = await googleSheet.spreadsheets.values.batchGet({
+                spreadsheetId: this.spreadsheetId,
+                ranges,
+            });
+            // Handle check
+            const userName = await Encryption(user.user);
+            const email = await Encryption(user.email);
+            const phone = await Encryption(user.phone);
+            if (result.data.valueRanges[0].values) {
+                const l = result.data.valueRanges[0].values.length;
+                for (var i = 0; i < l; i++) {
+                    if (i + 1 !== user.id) {
+                        if (
+                            result.data.valueRanges[0].values[i][0] === userName
+                        ) {
+                            throw {
+                                message: 'User bi trung!',
+                                statusCode: 400,
+                            };
+                        }
+                        if (result.data.valueRanges[1].values[i][0] === email) {
+                            throw {
+                                message: 'Email bi trung!',
+                                statusCode: 400,
+                            };
+                        }
+                        if (result.data.valueRanges[2].values[i][0] === phone) {
+                            throw {
+                                message: 'Phone bi trung!',
+                                statusCode: 400,
+                            };
+                        }
+                    }
+                }
             }
-            if (
-                users[i].email === user.email 
-            ) {
-                return {
-                    message: "Email bi trung !!!",
-                    statusCode: 400,
-                };
-            }
-            if (
-                users[i].phone === user.phone 
-            ) {
-                return {
-                    message: "Phone bi trung !!!",
-                    statusCode: 400,
-                };
-            }
+            return true;
+        } catch (err) {
+            console.log('Err in checking');
+            throw err;
         }
     }
 }
